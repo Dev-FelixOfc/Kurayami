@@ -40,8 +40,12 @@ git clone https://github.com/Dev-FelixOfc/Kurayami
 3. **Verificación:**
 Asegúrate de que la propiedad del tema en tu configuración apunte a Kurayami. El servidor Express detectará automáticamente el archivo dash.html y los parciales internos al arrancar.
 
-👨‍💻 Autor
+---
+
+## 👨‍💻 Autor
+
 Félix Ofc — Developer & admin principal
 Proyecto Base: API Kazuma
+
 <p align="center">MIT License • © 2026 Kazuma API</p>
 
