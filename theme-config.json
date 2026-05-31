@@ -1,0 +1,11 @@
+{
+  "themeName": "kurayami",
+  "version": "1.0.0",
+  "description": "Un tema oscuro profundo con tonos neón morados y oscuros para Kazuma API.",
+  "author": "Félix Ofc",
+  "license": "MIT",
+  "settings": {
+    "primaryColor": "#8a2be2",
+    "backgroundColor": "#05050a"
+  }
+}
