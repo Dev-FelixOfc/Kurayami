@@ -142,6 +142,14 @@
 
         .loading-text { margin-top: 15px; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px; color: var(--neon-purple); text-transform: uppercase; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* Efecto hover global para el botón del tema en el footer */
+        .kurayami-footer a:hover {
+            background: rgba(168, 85, 247, 0.15) !important;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+            color: #fff !important;
+            border-color: var(--neon-purple) !important;
+        }
     </style>
 </head>
 <body>
@@ -185,12 +193,14 @@
 
     <div class="container" id="content-area"></div>
 
-    <!-- Módulo dinámico: Llama al archivo parcial de tu repositorio de temas -->
-    <%- include('partials/footer.html') %>
+    <div id="kurayami-footer-target" class="kurayami-footer"></div>
 
     <script>
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         if (!userData) window.location.href = '/login';
+
+        // Validar el autor en consola de manera pro
+        console.log("Kurayami Environment Active — Developed by Félix Ofc");
 
         function toggleMenu() { 
             document.getElementById('sidebar').classList.toggle('active'); 
@@ -304,6 +314,18 @@
                 </div>`;
 
                 updateUptime(data.uptime);
+
+                // Inyección segura y dinámica del footer limpio estilo Kurayami
+                document.getElementById('kurayami-footer-target').innerHTML = `
+                <footer style="text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; background: rgba(7, 7, 10, 0.4); border-top: 1px solid rgba(168, 85, 247, 0.05); margin-top: auto;">
+                    <p style="margin: 0; letter-spacing: 0.5px;">
+                        COPYRIGHT © KAZUMA API | 
+                        <a href="/theme/kurayami" style="color: var(--neon-purple); text-decoration: none; font-weight: 900; padding: 4px 8px; border-radius: 8px; background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); transition: all 0.3s ease; display: inline-block; margin-left: 2px;">
+                            KURAYAMI THEME <i class="fas fa-external-link-alt" style="font-size: 0.6rem; margin-left: 3px;"></i>
+                        </a>
+                    </p>
+                </footer>`;
+
             } catch (e) { 
                 console.error("Error al cargar Dashboard:", e);
                 area.innerHTML = "<p style='text-align:center; color:var(--neon-purple); font-weight:bold; margin-top:50px;'>FALLO EN LA CONEXIÓN PROTOCOLO</p>"; 
