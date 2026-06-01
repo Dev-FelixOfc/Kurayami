@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kazuma API | Panel</title>
+    <title>Kazuma API | Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js?render=6Lfw-dwsAAAAACc6y5K4sfFnplSqbskYPia1ADh5"></script>
@@ -16,7 +16,7 @@
             --neon-purple: #7c4dff; 
             --text-main: #ffffff;
             --text-muted: #7e84a3;
-            --transition: 0.25s ease-in-out;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body { 
@@ -31,19 +31,27 @@
             overflow-x: hidden; 
         }
 
-        .grecaptcha-badge { display: none !important; }
+        .grecaptcha-badge { 
+            width: 70px !important; 
+            overflow: hidden !important; 
+            transition: all 0.3s ease !important;
+            right: 0px !important; 
+            bottom: 20px !important;
+            z-index: 9999 !important;
+        }
+        .grecaptcha-badge:hover { width: 256px !important; }
 
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .spinner { width: 40px; height: 40px; border: 3px solid rgba(124, 77, 255, 0.1); border-top: 3px solid var(--neon-purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(124, 77, 255, 0.1); border-top: 3px solid var(--neon-purple); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         header { 
             background: #141622; 
-            padding: 14px 20px; 
+            padding: 16px 20px; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03); 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
@@ -52,19 +60,45 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
         }
 
         .brand-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--input-bg);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #d1d5db;
+        }
+
+        .profile-banner {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+        .profile-banner:hover {
+            border-color: var(--neon-purple);
+            transform: scale(1.05);
         }
 
         .container { 
@@ -72,36 +106,83 @@
             padding: 20px; 
             box-sizing: border-box; 
             flex-grow: 1;
-            max-width: 640px;
+            max-width: 600px;
             margin: 0 auto;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 0 0 6px 0;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 25px 0;
         }
 
         .api-card { 
             background: var(--card-bg); 
             border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 16px; 
-            border: 1px solid rgba(255, 255, 255, 0.01); 
+            padding: 22px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.02); 
+        }
+
+        .card-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 14px 0;
+        }
+
+        .stats-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-box { 
-            background: var(--input-bg); 
-            padding: 16px; 
-            border-radius: 16px; 
-            position: relative;
+            background: var(--card-bg); 
+            padding: 18px; 
+            border-radius: 20px; 
             display: flex;
             align-items: center;
             gap: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
         }
 
-        .stat-icon {
-            width: 44px;
-            height: 44px;
+        .stat-icon-wrapper {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
+            background: var(--input-bg);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .stat-value {
             font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 2px;
         }
 
         .key-box { 
@@ -123,29 +204,14 @@
             margin-bottom: 10px; 
         }
 
-        /* Sidebar hacia la Izquierda como Akirax */
-        .sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 300px; height: 100%; background: #11121c; border-right: 1px solid rgba(255,255,255,0.02); transition: var(--transition); z-index: 2000; padding: 30px 20px; box-sizing: border-box; }
+        /* Menú Lateral a la Izquierda */
+        .sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 300px; height: 100%; background: #0c0d14; border-right: 1px solid rgba(255,255,255,0.02); transition: var(--transition); z-index: 2000; padding: 30px 20px; box-sizing: border-box; }
         .sidebar.active { left: 0; }
-        .sidebar-link { display: flex; align-items: center; gap: 14px; color: #9ca3af; text-decoration: none; padding: 14px; border-radius: 14px; margin-bottom: 6px; font-weight: 500; font-size: 0.95rem; transition: var(--transition); cursor: pointer; }
+        .sidebar-link { display: flex; align-items: center; gap: 14px; color: #9ca3af; text-decoration: none; padding: 14px; border-radius: 14px; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem; transition: var(--transition); cursor: pointer; }
         .sidebar-link:hover { background: var(--input-bg); color: #ffffff; }
-        .sidebar-link i { width: 20px; text-align: center; }
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 1500; backdrop-filter: blur(4px); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .overlay.active { display: block; }
-
-        .header-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .kurayami-footer a:hover {
-            background: rgba(124, 77, 255, 0.1) !important;
-            color: #fff !important;
-        }
     </style>
 </head>
 <body>
@@ -156,35 +222,35 @@
 
     <header>
         <div class="header-left">
-            <div onclick="toggleMenu()" style="font-size: 1.25rem; cursor: pointer; color: #9ca3af;"><i class="fas fa-bars"></i></div>
+            <div onclick="toggleMenu()" style="font-size: 1.3rem; cursor: pointer; color: var(--text-muted);"><i class="fas fa-bars"></i></div>
             <div class="brand-title">Panel</div>
         </div>
         <div class="header-right">
-            <div class="flex items-center gap-1.5 bg-[#1d2032] px-3 py-1.5 rounded-full text-xs font-semibold text-slate-300">
-                <i class="fas fa-wallet text-slate-400"></i>
-                <span id="balance-display">0,00</span>
+            <div class="balance-box">
+                <i class="fas fa-wallet" style="color: var(--text-muted);"></i>
+                <span id="balance-display">0</span>
             </div>
-            <div onclick="logout()" style="font-size: 1.1rem; cursor: pointer; color: #9ca3af;"><i class="fas fa-power-off"></i></div>
-            <img id="top-avatar" src="https://files.catbox.moe/9ssbf9.jpg" class="header-avatar" onclick="window.location.href='/profile'">
+            <div onclick="logout()" style="font-size: 1.1rem; cursor: pointer; color: var(--text-muted); margin-left: 4px;"><i class="fas fa-power-off"></i></div>
+            <img id="top-avatar" src="https://files.catbox.moe/9ssbf9.jpg" class="profile-banner" onclick="window.location.href='/profile'">
         </div>
     </header>
 
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <nav class="sidebar" id="sidebar">
-        <div class="flex items-center gap-3 mb-8 px-2">
-            <div class="w-8 h-8 rounded-xl bg-purple-600 flex items-center justify-center font-bold text-xs">AK</div>
-            <span class="font-bold text-sm tracking-wide">Akirax presenta</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 0 4px;">
+            <span style="font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px;">Navegación</span>
+            <i class="fas fa-times" onclick="toggleMenu()" style="font-size: 1.2rem; cursor: pointer; color: var(--text-muted);"></i>
         </div>
 
         <div id="admin-nav" style="display:none;">
-            <a href="/admin" class="sidebar-link text-purple-400"><i class="fas fa-user-shield"></i> Panel Admin</a>
+            <a href="/admin" class="sidebar-link" style="color: var(--neon-purple);"><i class="fas fa-user-shield"></i> Panel Admin</a>
+            <div style="height: 1px; background: rgba(255,255,255,0.03); margin: 10px 0;"></div>
         </div>
 
-        <a href="/dash" class="sidebar-link"><i class="fas fa-th-large"></i> Panel</a>
-        <a href="/profile" class="sidebar-link"><i class="fas fa-user"></i> Mi Perfil</a>
+        <div class="sidebar-link" onclick="toggleMenu()"><i class="fas fa-th-large"></i> Dashboard</div>
         
-        <div class="border-t border-white/[0.03] my-4"></div>
+        <div style="height: 1px; background: rgba(255,255,255,0.03); margin: 15px 0;"></div>
 
         <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search</a>
         <a href="/endpoints/tools" class="sidebar-link"><i class="fas fa-tools"></i> Tools</a>
@@ -194,13 +260,13 @@
 
     <div class="container" id="content-area"></div>
 
-    <div id="kurayami-footer-target" class="kurayami-footer"></div>
+    <div id="kurayami-footer-target"></div>
 
     <script>
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         if (!userData) window.location.href = '/login';
 
-        console.log("Environment Synced — Developed by Félix Ofc");
+        console.log("System Synced Successfully");
 
         function toggleMenu() { 
             document.getElementById('sidebar').classList.toggle('active'); 
@@ -214,7 +280,7 @@
 
         function copyKey() { 
             navigator.clipboard.writeText(userData.key); 
-            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copiado al portapapeles', showConfirmButton: false, timer: 1500, background: 'var(--card-bg)', color: 'var(--text-main)' }); 
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copiado al Portapapeles', showConfirmButton: false, timer: 1500, background: 'var(--card-bg)', color: 'var(--text-main)' }); 
         }
 
         function toggleEye() { 
@@ -244,9 +310,10 @@
             if (userData.role === 'admin') document.getElementById('admin-nav').style.display = 'block';
 
             try {
-                const [resGlobal, resMe] = await Promise.all([
+                const [resGlobal, resMe, resFooter] = await Promise.all([
                     fetch('/api/auth/dashboard-global'),
-                    fetch(`/api/auth/me?apiKey=${userData.key}`)
+                    fetch(`/api/auth/me?apiKey=${userData.key}`),
+                    fetch('/partials/footer.html').then(res => res.ok ? res.text() : null).catch(() => null)
                 ]);
 
                 const data = await resGlobal.json();
@@ -256,84 +323,72 @@
                     const updatedUser = { ...userData, ...me.data };
                     localStorage.setItem('kazuma_user', JSON.stringify(updatedUser));
                     document.getElementById('top-avatar').src = me.data?.profile_img || 'https://files.catbox.moe/9ssbf9.jpg';
-                    // Sincroniza solicitudes o balance simulado en la cabecera
                     document.getElementById('balance-display').innerText = `${me.data?.requests.today || 0}`;
                 }
 
                 area.innerHTML = `
-                <section class="mb-6 px-1">
-                    <h1 class="text-2xl font-bold text-white tracking-tight">Anfitrión de Kazuma</h1>
-                    <p class="text-xs font-medium text-slate-500 mt-1">Inicia session en tu cuenta de la API</p>
+                <section style="padding: 10px 0 5px 0;">
+                    <h1 class="dashboard-title">Anfitrión de Kazuma</h1>
+                    <p class="dashboard-subtitle">Inicia sesión en tu cuenta de la API</p>
                 </section>
 
-                <div class="grid grid-template-columns: 1fr; gap: 14px; class="mb-4">
+                <div class="stats-grid">
                     <div class="stat-box">
-                        <div class="stat-icon bg-orange-500/10 text-orange-500"><i class="fas fa-users"></i></div>
-                        <div>
-                            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Usuarios en Red</div>
-                            <div class="text-xl font-bold text-white mt-0.5">${data.totalUsers} Usuarios</div>
+                        <div class="stat-icon-wrapper"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-name">Usuarios en Red</span>
+                            <span class="stat-value">${data.totalUsers} Usuarios</span>
                         </div>
                     </div>
                     
                     <div class="stat-box">
-                        <div class="stat-icon bg-purple-500/10 text-purple-500"><i class="fas fa-clock"></i></div>
-                        <div>
-                            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Server Uptime</div>
-                            <div id="uptime-val" class="text-xl font-bold text-white mt-0.5">00:00:00</div>
+                        <div class="stat-icon-wrapper"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-name">Server Uptime</span>
+                            <span id="uptime-val" class="stat-value">00:00:00</span>
                         </div>
                     </div>
 
                     <div class="stat-box">
-                        <div class="stat-icon bg-blue-500/10 text-blue-500"><i class="fas fa-chart-bar"></i></div>
-                        <div>
-                            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Límite Diario</div>
-                            <div class="text-xl font-bold text-white mt-0.5">${me.data?.requests.today || 0} / ${me.data?.requests.limit || 0}</div>
+                        <div class="stat-icon-wrapper"><i class="fas fa-chart-bar"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-name">Límite Diario</span>
+                            <span class="stat-value">${me.data?.requests.today || 0} / ${me.data?.requests.limit || 0}</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="api-card">
-                    <p class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">Mi API Key</p>
+                    <p class="card-label">Mi API Key</p>
                     <div class="key-box">
-                        <span id="key-display" class="font-mono text-sm text-slate-300">••••••••••••••••</span>
-                        <div class="flex gap-4">
-                            <i class="fas fa-eye text-slate-500 cursor-pointer hover:text-slate-300 transition" onclick="toggleEye()"></i>
-                            <i class="fas fa-copy text-purple-400 cursor-pointer hover:text-purple-300 transition" onclick="copyKey()"></i>
+                        <span id="key-display" style="font-family: monospace; font-size: 0.9rem; color: #e5e7eb;">••••••••••••••••</span>
+                        <div style="display: flex; gap: 16px;">
+                            <i class="fas fa-eye text-slate-500 style="cursor: pointer;" onclick="toggleEye()"></i>
+                            <i class="fas fa-copy" style="color: var(--neon-purple); cursor: pointer;" onclick="copyKey()"></i>
                         </div>
                     </div>
                 </div>
 
                 <div class="api-card">
-                    <p class="text-xs font-bold text-slate-400 mb-4 uppercase tracking-wider">Top 5 usuarios</p>
+                    <p class="card-label">Top 5 usuarios</p>
                     ${data.top5.map((u, i) => `
                         <div class="user-card">
-                            <div class="flex items-center gap-3">
-                                <div class="w-7 h-7 rounded-lg bg-[#25293e] text-slate-300 flex items-center justify-center font-bold text-xs">
-                                    ${u.username.charAt(0).toUpperCase()}
-                                </div>
-                                <span class="text-sm font-semibold text-slate-200">#${i+1} ${u.username}</span>
-                            </div>
-                            <span class="text-xs font-bold text-purple-400">${u.total} reqs</span>
+                            <span style="font-size: 0.95rem; font-weight: 600; color: #e5e7eb;">#${i+1} ${u.username}</span>
+                            <span style="color: var(--neon-purple); font-weight: 700; font-size: 0.85rem;">${u.total} reqs</span>
                         </div>
                     `).join('')}
                 </div>`;
 
                 updateUptime(data.uptime);
 
-                // Llamar el footer para que se inyecte exactamente como deseas
-                document.getElementById('kurayami-footer-target').innerHTML = `
-                <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.01); margin-top: auto;">
-                    <p style="margin: 0;">
-                        Copyright © 2021-2026 Akirax host. Todos los derechos reservados.
-                    </p>
-                    <p style="margin: 5px 0 0 0;">
-                        Desarrollado por <a href="/theme/kurayami" style="color: var(--neon-purple); text-decoration: none; font-weight: 700;">CtrlPanel | Tema Phoenix</a>
-                    </p>
-                </footer>`;
+                // Llamada exacta e inyección limpia de tu partial nativo
+                if (resFooter) {
+                    document.getElementById('kurayami-footer-target').innerHTML = resFooter;
+                }
 
             } catch (e) { 
-                console.error(e);
-                area.innerHTML = "<p style='text-align:center; color:var(--neon-purple); font-weight:bold; margin-top:50px;'>FALLO EN LA CONEXIÓN PROTOCOLO</p>"; 
+                console.error("Error al sincronizar paneles:", e);
+                area.innerHTML = "<p style='text-align:center; color:var(--neon-purple); font-weight:bold; margin-top:50px;'>ERROR EN LA CARGA DEL PROTOCOLO</p>"; 
             }
 
             setTimeout(() => { pre.style.display = 'none'; }, 400);
