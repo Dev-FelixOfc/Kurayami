@@ -25,7 +25,7 @@
             --card-bg: #ffffff;
             --sidebar-bg: #f9fafb;
             --text-main: #111827;
-            --text-muted: #6b7280;
+            --text-muted: #4b5563;
             --neon-blue: #2563eb;
         }
 
@@ -96,6 +96,10 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
+        body.light-mode .menu-trigger:hover {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
         .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.5px; }
         .brand span { color: var(--neon-blue); }
 
@@ -109,7 +113,6 @@
         }
         .theme-toggle:hover { color: var(--text-main); }
 
-        /* NUEVO BOTÓN CIRCULAR DE PERFIL */
         .profile-trigger {
             width: 36px;
             height: 36px;
@@ -121,10 +124,10 @@
             transition: var(--transition);
             position: relative;
         }
+        body.light-mode .profile-trigger { border: 2px solid rgba(0, 0, 0, 0.08); }
         .profile-trigger:hover { border-color: var(--neon-blue); }
         .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* MENÚ DESPLEGABLE DE PERFIL */
         .profile-dropdown {
             position: absolute;
             top: 60px;
@@ -137,6 +140,10 @@
             display: none;
             z-index: 2100;
             padding: 6px;
+        }
+        body.light-mode .profile-dropdown {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
         .profile-dropdown.active { display: block; animation: fadeIn 0.2s ease; }
         .dropdown-item {
@@ -152,6 +159,7 @@
             transition: var(--transition);
         }
         .dropdown-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--neon-blue); }
+        body.light-mode .dropdown-item:hover { background: rgba(0, 0, 0, 0.03); }
 
         .container { 
             width: 100%; 
@@ -171,7 +179,6 @@
             object-fit: cover; 
         }
 
-        /* DISEÑO DE CARDS ACTUALIZADO (ESTILO NEBULA) */
         .api-card { 
             background: var(--card-bg); 
             border-radius: 16px; 
@@ -207,7 +214,7 @@
             position: relative;
             overflow: hidden;
         }
-        body.light-mode .stat-box { background: rgba(0, 0, 0, 0.02); }
+        body.light-mode .stat-box { border: 1px solid rgba(0, 0, 0, 0.04); background: rgba(0, 0, 0, 0.02); }
 
         .key-box { 
             display: flex; 
@@ -218,7 +225,7 @@
             border-radius: 12px; 
             border: 1px solid rgba(255, 255, 255, 0.03); 
         }
-        body.light-mode .key-box { background: rgba(0, 0, 0, 0.03); }
+        body.light-mode .key-box { border: 1px solid rgba(0, 0, 0, 0.04); background: rgba(0, 0, 0, 0.03); }
 
         .user-card { 
             display: flex; 
@@ -230,17 +237,18 @@
             margin-bottom: 8px; 
             border: 1px solid rgba(255, 255, 255, 0.02);
         }
-        body.light-mode .user-card { background: rgba(0,0,0,0.01); }
+        body.light-mode .user-card { border: 1px solid rgba(0, 0, 0, 0.03); background: rgba(0,0,0,0.01); }
 
-        /* SIDEBAR CAMBIADO AL LADO IZQUIERDO */
         .sidebar { position: fixed; top: 0; left: -100%; width: 80%; max-width: 290px; height: 100%; background: var(--sidebar-bg); border-right: 1px solid rgba(255, 255, 255, 0.04); transition: var(--transition); z-index: 2000; padding: 25px 18px; box-sizing: border-box; }
+        body.light-mode .sidebar { border-right: 1px solid rgba(0, 0, 0, 0.05); }
         .sidebar.active { left: 0; }
         
         .sidebar-link { display: flex; align-items: center; gap: 12px; color: var(--text-muted); text-decoration: none; padding: 12px; border-radius: 10px; margin-bottom: 4px; font-weight: 600; font-size: 0.9rem; transition: var(--transition); }
         .sidebar-link:hover, .sidebar-link.active { color: var(--text-main); background: rgba(255, 255, 255, 0.03); }
+        body.light-mode .sidebar-link:hover, body.light-mode .sidebar-link.active { background: rgba(0, 0, 0, 0.03); }
         .sidebar-link i { font-size: 1.05rem; }
 
-        .nav-category { color: var(--text-muted); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 18px 0 8px 12px; letter-spacing: 0.5px; opacity: 0.5; }
+        .nav-category { color: var(--text-muted); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 18px 0 8px 12px; letter-spacing: 0.5px; opacity: 0.7; }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .overlay.active { display: block; }
@@ -249,6 +257,15 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('kazuma-theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light-mode');
+                document.write('<style>body { --dark-bg: #f3f4f6; --text-main: #111827; }</style>');
+            }
+        })();
+    </script>
 </head>
 <body>
 
@@ -266,14 +283,12 @@
             <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
                 <i class="fas fa-moon"></i>
             </div>
-            <!-- Círculo del Perfil -->
             <div class="profile-trigger" onclick="toggleDropdown(event)">
                 <img id="avatar-trigger-img" src="https://files.catbox.moe/sfmsea.jpg" alt="User">
             </div>
         </div>
     </header>
 
-    <!-- Menú desplegable del perfil -->
     <div class="profile-dropdown" id="profile-dropdown">
         <a href="/profile" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
         <a href="/notifications" class="dropdown-item"><i class="fas fa-bell"></i> Notificaciones</a>
@@ -281,7 +296,6 @@
 
     <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
 
-    <!-- Sidebar izquierdo corregido sin perfil -->
     <nav class="sidebar" id="sidebar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
             <span style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">NAVEGACIÓN</span>
@@ -294,7 +308,7 @@
         </div>
 
         <p class="nav-category">General</p>
-        <div class="sidebar-link active" onclick="toggleMenu()"><i class="fas fa-home"></i> Dashboard</div>
+        <div class="sidebar-link active" onclick="closeAllPanels()"><i class="fas fa-home"></i> Dashboard</div>
 
         <p class="nav-category">Servicios API</p>
         <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search Endpoints</a>
@@ -307,7 +321,6 @@
 
     <div class="container" id="content-area"></div>
 
-    <!-- PORTAL DE PORTALES: Consume directamente tu archivo compartido -->
     <%- include('partials/footer.html') %>
 
     <script>
@@ -315,16 +328,16 @@
         if (!userData) window.location.href = '/login';
 
         function toggleMenu() { 
-            document.getElementById('sidebar').classList.toggle('active'); 
-            document.getElementById('overlay').classList.toggle('active'); 
             document.getElementById('profile-dropdown').classList.remove('active');
+            const sidebarActive = document.getElementById('sidebar').classList.toggle('active'); 
+            document.getElementById('overlay').classList.toggle('active', sidebarActive); 
         }
 
         function toggleDropdown(event) {
             event.stopPropagation();
-            document.getElementById('profile-dropdown').classList.toggle('active');
             document.getElementById('sidebar').classList.remove('active');
-            document.getElementById('overlay').classList.toggle('active', document.getElementById('profile-dropdown').classList.contains('active'));
+            const dropdownActive = document.getElementById('profile-dropdown').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active', dropdownActive);
         }
 
         function closeAllPanels() {
@@ -422,7 +435,7 @@
                 <section style="text-align: center; padding: 15px 0 25px 0;">
                     <img src="${finalAvatar}" class="hero-img">
                     <h1 style="font-size: 1.35rem; font-weight: 800; margin: 0; letter-spacing: -0.5px;">SISTEMA OPERATIVO</h1>
-                    <p style="color:var(--text-muted); browser-font-weight: 600; font-size: 0.8rem; margin-top: 4px;">@${userData.username.toLowerCase()}</p>
+                    <p style="color:var(--text-muted); font-weight: 600; font-size: 0.8rem; margin-top: 4px;">@${userData.username.toLowerCase()}</p>
                 </section>
 
                 <div class="api-card">
