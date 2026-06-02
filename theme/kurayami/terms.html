@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurayami Theme - Términos y Privacidad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #07070a;
+            --card-bg: rgba(16, 16, 24, 0.6);
+            --neon-purple: #a855f7;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(168, 85, 247, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 750px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin: 0 0 10px 0;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #fff, var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            color: var(--neon-purple);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding-bottom: 6px;
+        }
+
+        .section p, .section ul {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0 0 12px 0;
+        }
+
+        .section ul {
+            padding-left: 20px;
+        }
+
+        .section ul li {
+            margin-bottom: 8px;
+        }
+
+        .section ul li strong {
+            color: var(--text-main);
+        }
+
+        .legal-note {
+            background: rgba(168, 85, 247, 0.03);
+            border-left: 3px solid var(--neon-purple);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+
+        .legal-note p {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 25px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Términos y Privacidad</h1>
+        <p>Condiciones de Uso y Política de Privacidad del Tema Kurayami</p>
+    </div>
+
+    <div class="section">
+        <h2><i class="fas fa-file-contract"></i> 1. Condiciones de Uso</h2>
+        <p>Al instalar y utilizar el tema <strong>Kurayami</strong> en tu instancia de Kazuma API, aceptas cumplir con los siguientes lineamientos estipulados por el desarrollador:</p>
+        <ul>
+            <li><strong>Propiedad Intelectual:</strong> El diseño, la hoja de estilos CSS y las modificaciones visuales son propiedad de <strong>Dev-FelixOfc</strong>. Se permite el uso personal y comercial dentro de la plataforma Kazuma API.</li>
+            <li><strong>Modificaciones:</strong> Tienes permitido modificar los colores, logos y textos locales para adaptarlos a tu marca personal o comercial.</li>
+            <li><strong>Distribución:</strong> Queda prohibida la redistribución o reventa de este tema bajo tu propio nombre sin el consentimiento explícito del creador original. Debes mantener los créditos del footer intactos.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2><i class="fas fa-user-shield"></i> 2. Política de Privacidad</h2>
+        <p>El tema Kurayami es un entorno de interfaz puramente visual (Frontend). Su política de tratamiento de datos se rige por las siguientes bases:</p>
+        <ul>
+            <li><strong>Recopilación de Datos:</strong> El tema como tal no recopila, no almacena ni transmite ningún tipo de información personal, credencial o API Key a servidores externos al tuyo.</li>
+            <li><strong>Procesamiento Local:</strong> Toda la información de sesiones, usuarios y tokens que maneja la interfaz es administrada localmente por tu backend de Express y almacenada en tus estructuras internas securizadas (como <code>database/users.json</code>).</li>
+            <li><strong>Servicios de Terceros:</strong> El tema incluye soporte visual para Google reCAPTCHA V3 con el fin de proteger tus formularios del spam. Dicho servicio se ejecuta de forma directa bajo los términos de privacidad de Google.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2><i class="fas fa-exclamation-triangle"></i> 3. Limitación de Responsabilidad</h2>
+        <p>El tema se entrega "tal cual", buscando la mayor estabilidad y optimización posibles.</p>
+        <div class="legal-note">
+            <p>Dev-FelixOfc no se hace responsable por fallos de seguridad derivados de malas configuraciones en el backend del servidor, pérdida de datos locales debido a malas prácticas de despliegue, o modificaciones de código de terceros que rompan la integridad visual de la interfaz.</p>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <a href="/theme/kurayami.html" class="btn">
+            <i class="fas fa-arrow-left"></i> Volver a Info
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
