@@ -254,13 +254,13 @@
 
     <div id="preloader">
         <div class="spinner"></div>
-        <div class="loading-text">Iniciando Kurayami...</div>
+        <div class="loading-text">Loading...</div>
     </div>
 
     <header>
         <div class="header-left">
             <div class="menu-trigger" onclick="toggleMenu()"><i class="fas fa-bars-staggered"></i></div>
-            <div class="brand">KAZUMA <span>KURAYAMI</span></div>
+            <div class="brand">KAZUMA <span>API</span></div>
         </div>
         <div class="header-right">
             <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
@@ -268,7 +268,7 @@
             </div>
             <!-- Círculo del Perfil -->
             <div class="profile-trigger" onclick="toggleDropdown(event)">
-                <img id="avatar-trigger-img" src="https://files.catbox.moe/9ssbf9.jpg" alt="User">
+                <img id="avatar-trigger-img" src="https://files.catbox.moe/sfmsea.jpg" alt="User">
             </div>
         </div>
     </header>
@@ -415,7 +415,7 @@
                     localStorage.setItem('kazuma_user', JSON.stringify(updatedUser));
                 }
 
-                const finalAvatar = me.data?.profile_img || 'https://files.catbox.moe/9ssbf9.jpg';
+                const finalAvatar = me.data?.profile_img || 'https://files.catbox.moe/sfmsea.jpg';
                 document.getElementById('avatar-trigger-img').src = finalAvatar;
 
                 area.innerHTML = `
