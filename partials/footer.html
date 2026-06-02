@@ -1,18 +1,65 @@
-<footer class="footer" style="text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; background: rgba(7, 7, 10, 0.4); border-top: 1px solid rgba(168, 85, 247, 0.05); margin-top: auto;">
-    <p style="margin: 0; letter-spacing: 0.5px; uppercase">
+<footer class="footer">
+    <p>
         Copyright © Kazuma API | 
-        <a href="/theme/kurayami" style="color: var(--neon-purple); text-decoration: none; font-weight: 900; padding: 4px 8px; border-radius: 8px; background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.1); transition: all 0.3s ease; display: inline-block; margin-left: 2px;">
-            Kurayami Theme <i class="fas fa-external-link-alt" style="font-size: 0.6rem; margin-left: 3px;"></i>
+        <a href="/theme/kurayami">
+            Kurayami Theme <i class="fas fa-external-link-alt"></i>
         </a>
     </p>
 </footer>
 
 <style>
-    /* Efecto de iluminación al pasar el mouse por encima del botón del tema */
+    :root {
+        --neon-purple: #a855f7;
+        --footer-bg: rgba(7, 7, 10, 0.4);
+        --footer-border: rgba(168, 85, 247, 0.05);
+    }
+
+    body.light-mode {
+        --neon-purple: #7c3aed;
+        --footer-bg: rgba(255, 255, 255, 0.6);
+        --footer-border: rgba(124, 58, 237, 0.1);
+    }
+
+    .footer {
+        text-align: center;
+        padding: 25px;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: var(--footer-bg);
+        border-top: 1px solid var(--footer-border);
+        margin-top: auto;
+        transition: background var(--transition), border var(--transition);
+    }
+
+    .footer p {
+        margin: 0;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .footer a {
+        color: var(--neon-purple);
+        text-decoration: none;
+        font-weight: 900;
+        padding: 4px 8px;
+        border-radius: 8px;
+        background: rgba(168, 85, 247, 0.05);
+        border: 1px solid rgba(168, 85, 247, 0.1);
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-left: 2px;
+    }
+
+    body.light-mode .footer a {
+        background: rgba(124, 58, 237, 0.05);
+        border: 1px solid rgba(124, 58, 237, 0.1);
+    }
+
     .footer a:hover {
-        background: rgba(168, 85, 247, 0.15) !important;
+        background: var(--neon-purple) !important;
         box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-        color: #fff !important;
+        color: #ffffff !important;
         border-color: var(--neon-purple) !important;
     }
 </style>
