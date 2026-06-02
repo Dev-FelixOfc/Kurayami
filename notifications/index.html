@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kazuma | Notificaciones y Avisos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #07070a;
+            --card-bg: rgba(16, 16, 24, 0.6);
+            --neon-purple: #a855f7;
+            --neon-green: #10b981;
+            --neon-blue: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(168, 85, 247, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 16px;
+            flex-grow: 1;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin: 0 0 5px 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(45deg, #fff, var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .btn-back {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.25s ease;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(-3px);
+        }
+
+        /* Tarjetas de Notificaciones */
+        .notice-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease;
+        }
+
+        .notice-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .notice-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--neon-purple);
+        }
+
+        /* Variantes de color lateral según el estado */
+        .notice-card.success::before { background: var(--neon-green); }
+        .notice-card.info::before { background: var(--neon-blue); }
+
+        .notice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .notice-tag {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .success .notice-tag { background: rgba(16, 185, 129, 0.1); color: var(--neon-green); }
+        .info .notice-tag { background: rgba(59, 130, 246, 0.1); color: var(--neon-blue); }
+        .purple .notice-tag { background: rgba(168, 85, 247, 0.1); color: var(--neon-purple); }
+
+        .notice-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .notice-body h2 {
+            font-size: 1.1rem;
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .notice-body p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0 0 15px 0;
+        }
+
+        /* Botones de acción dentro de los avisos */
+        .notice-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-green { background: rgba(16, 185, 129, 0.08); color: var(--neon-green); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .btn-green:hover { background: var(--neon-green); color: #fff; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
+
+        .btn-blue { background: rgba(59, 130, 246, 0.08); color: var(--neon-blue); border: 1px solid rgba(59, 130, 246, 0.15); }
+        .btn-blue:hover { background: var(--neon-blue); color: #fff; box-shadow: 0 0 12px rgba(59, 130, 246, 0.4); }
+
+        .btn-purple { background: rgba(168, 85, 247, 0.08); color: var(--neon-purple); border: 1px solid rgba(168, 85, 247, 0.15); }
+        .btn-purple:hover { background: var(--neon-purple); color: #fff; box-shadow: 0 0 12px rgba(168, 85, 247, 0.4); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-title">
+            <h1>Panel de Avisos</h1>
+            <p>Historial de actualizaciones y comunicados oficiales</p>
+        </div>
+        <a href="/dash" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+    <div class="notice-card success">
+        <div class="notice-header">
+            <span class="notice-tag">Sistema</span>
+            <span class="notice-time">Ahora mismo</span>
+        </div>
+        <div class="notice-body">
+            <h2>Kazuma API Operativa</h2>
+            <p>Nos complace informar que toda nuestra infraestructura, endpoints de automatización, inteligencia artificial y módulos de descargas se encuentran respondiendo al 100% y de manera óptima sin retrasos.</p>
+            <a href="https://dash.kazuma.giize.com" target="_blank" class="notice-action btn-green">
+                <i class="fas fa-server"></i> Ver Estado de Host
+            </a>
+        </div>
+    </div>
+
+    <div class="notice-card purple">
+        <div class="notice-header">
+            <span class="notice-tag">Comunidad</span>
+            <span class="notice-time">Anuncio Global</span>
+        </div>
+        <div class="notice-body">
+            <h2>Canal Oficial de WhatsApp</h2>
+            <p>Únete a nuestro canal exclusivo de difusión para recibir alertas instantáneas sobre parches de seguridad, lanzamientos de nuevos endpoints y promociones de la API antes que nadie.</p>
+            <a href="https://whatsapp.com/channel/0029Vb6sgWdJkK73qeLU0J0N" target="_blank" class="notice-action btn-purple">
+                <i class="fab fa-whatsapp"></i> Unirse al Canal
+            </a>
+        </div>
+    </div>
+
+    <div class="notice-card info">
+        <div class="notice-header">
+            <span class="notice-tag">Soporte</span>
+            <span class="notice-time">Atención 24/7</span>
+        </div>
+        <div class="notice-body">
+            <h2>¿Problemas técnicos o dudas?</h2>
+            <p>Si tienes inconvenientes con tus llamadas de API, la integración de llaves, o quieres reportar un bug directamente a los desarrolladores, abre un chat directo con nuestra mesa de soporte oficial.</p>
+            <a href="https://wa.me/573508941325" target="_blank" class="notice-action btn-blue">
+                <i class="fas fa-headset"></i> Contactar Soporte
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
