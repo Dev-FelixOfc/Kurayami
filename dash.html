@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kazuma | Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js?render=6Lfw-dwsAAAAACc6y5K4sfFnplSqbskYPia1ADh5"></script>
+
+    <style>
+        :root { 
+            --neon-blue: #3b82f6; 
+            --dark-bg: #0d0e12; 
+            --card-bg: #16171f; 
+            --sidebar-bg: #101118; 
+            --text-main: #f3f4f6; 
+            --text-muted: #9ca3af; 
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light-mode {
+            --dark-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f9fafb;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --neon-blue: #2563eb;
+        }
+
+        body { 
+            background-color: var(--dark-bg); 
+            color: var(--text-main); 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            padding: 0;
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        .grecaptcha-badge { 
+            width: 70px !important; 
+            overflow: hidden !important; 
+            transition: all 0.3s ease !important;
+            left: auto !important; 
+            right: 0px !important; 
+            bottom: 20px !important;
+            z-index: 9999 !important;
+        }
+        .grecaptcha-badge:hover { 
+            width: 256px !important; 
+        }
+
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: background var(--transition); }
+        .spinner { width: 45px; height: 45px; border: 3px solid rgba(59, 130, 246, 0.1); border-top: 3px solid var(--neon-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        header { 
+            background: rgba(22, 23, 31, 0.7); 
+            backdrop-filter: blur(12px);
+            padding: 12px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            transition: background var(--transition), border var(--transition);
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-trigger {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        .menu-trigger:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.5px; }
+        .brand span { color: var(--neon-blue); }
+
+        .theme-toggle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        .theme-toggle:hover { color: var(--text-main); }
+
+        /* NUEVO BOTÓN CIRCULAR DE PERFIL */
+        .profile-trigger {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+        .profile-trigger:hover { border-color: var(--neon-blue); }
+        .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* MENÚ DESPLEGABLE DE PERFIL */
+        .profile-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: var(--sidebar-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            width: 180px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: none;
+            z-index: 2100;
+            padding: 6px;
+        }
+        .profile-dropdown.active { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--neon-blue); }
+
+        .container { 
+            width: 100%; 
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px; 
+            box-sizing: border-box; 
+            flex-grow: 1;
+        }
+
+        .hero-img { 
+            width: 90px; 
+            height: 90px; 
+            border-radius: 50%; 
+            border: 2px solid var(--neon-blue); 
+            margin-bottom: 12px; 
+            object-fit: cover; 
+        }
+
+        /* DISEÑO DE CARDS ACTUALIZADO (ESTILO NEBULA) */
+        .api-card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.03); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        body.light-mode .api-card {
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .card-title {
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+        }
+
+        .stat-box { 
+            background: rgba(255, 255, 255, 0.01); 
+            padding: 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+        body.light-mode .stat-box { background: rgba(0, 0, 0, 0.02); }
+
+        .key-box { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: rgba(0,0,0,0.15); 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.03); 
+        }
+        body.light-mode .key-box { background: rgba(0, 0, 0, 0.03); }
+
+        .user-card { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            background: rgba(255, 255, 255, 0.01); 
+            padding: 12px 14px; 
+            border-radius: 12px; 
+            margin-bottom: 8px; 
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        body.light-mode .user-card { background: rgba(0,0,0,0.01); }
+
+        /* SIDEBAR CAMBIADO AL LADO IZQUIERDO */
+        .sidebar { position: fixed; top: 0; left: -100%; width: 80%; max-width: 290px; height: 100%; background: var(--sidebar-bg); border-right: 1px solid rgba(255, 255, 255, 0.04); transition: var(--transition); z-index: 2000; padding: 25px 18px; box-sizing: border-box; }
+        .sidebar.active { left: 0; }
+        
+        .sidebar-link { display: flex; align-items: center; gap: 12px; color: var(--text-muted); text-decoration: none; padding: 12px; border-radius: 10px; margin-bottom: 4px; font-weight: 600; font-size: 0.9rem; transition: var(--transition); }
+        .sidebar-link:hover, .sidebar-link.active { color: var(--text-main); background: rgba(255, 255, 255, 0.03); }
+        .sidebar-link i { font-size: 1.05rem; }
+
+        .nav-category { color: var(--text-muted); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin: 18px 0 8px 12px; letter-spacing: 0.5px; opacity: 0.5; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(4px); }
+        .overlay.active { display: block; }
+
+        .loading-text { margin-top: 12px; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="spinner"></div>
+        <div class="loading-text">Iniciando Kurayami...</div>
+    </div>
+
+    <header>
+        <div class="header-left">
+            <div class="menu-trigger" onclick="toggleMenu()"><i class="fas fa-bars-staggered"></i></div>
+            <div class="brand">KAZUMA <span>KURAYAMI</span></div>
+        </div>
+        <div class="header-right">
+            <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+                <i class="fas fa-moon"></i>
+            </div>
+            <!-- Círculo del Perfil -->
+            <div class="profile-trigger" onclick="toggleDropdown(event)">
+                <img id="avatar-trigger-img" src="https://files.catbox.moe/9ssbf9.jpg" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <!-- Menú desplegable del perfil -->
+    <div class="profile-dropdown" id="profile-dropdown">
+        <a href="/profile" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+        <a href="/notifications" class="dropdown-item"><i class="fas fa-bell"></i> Notificaciones</a>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
+
+    <!-- Sidebar izquierdo corregido sin perfil -->
+    <nav class="sidebar" id="sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
+            <span style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">NAVEGACIÓN</span>
+            <i class="fas fa-times menu-trigger" onclick="toggleMenu()" style="font-size: 1.1rem;"></i>
+        </div>
+
+        <div id="admin-nav" style="display:none;">
+            <p class="nav-category">Staff Control</p>
+            <a href="/admin" class="sidebar-link" style="color: var(--neon-blue);"><i class="fas fa-user-shield"></i> Panel Admin</a>
+        </div>
+
+        <p class="nav-category">General</p>
+        <div class="sidebar-link active" onclick="toggleMenu()"><i class="fas fa-home"></i> Dashboard</div>
+
+        <p class="nav-category">Servicios API</p>
+        <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search Endpoints</a>
+        <a href="/endpoints/tools" class="sidebar-link"><i class="fas fa-tools"></i> Core Tools</a>
+        <a href="/endpoints/download" class="sidebar-link"><i class="fas fa-download"></i> Media Downloads</a>
+        <a href="/endpoints/ai" class="sidebar-link"><i class="fas fa-robot"></i> Inteligencia Artificial</a>
+
+        <div class="sidebar-link" onclick="logout()" style="margin-top: 30px; color: #ef4444; cursor: pointer;"><i class="fas fa-power-off"></i> Cerrar Sesión</div>
+    </nav>
+
+    <div class="container" id="content-area"></div>
+
+    <!-- PORTAL DE PORTALES: Consume directamente tu archivo compartido -->
+    <%- include('partials/footer.html') %>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('kazuma_user'));
+        if (!userData) window.location.href = '/login';
+
+        function toggleMenu() { 
+            document.getElementById('sidebar').classList.toggle('active'); 
+            document.getElementById('overlay').classList.toggle('active'); 
+            document.getElementById('profile-dropdown').classList.remove('active');
+        }
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            document.getElementById('profile-dropdown').classList.toggle('active');
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.toggle('active', document.getElementById('profile-dropdown').classList.contains('active'));
+        }
+
+        function closeAllPanels() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('profile-dropdown').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('profile-dropdown').contains(e.target)) {
+                document.getElementById('profile-dropdown').classList.remove('active');
+                if(!document.getElementById('sidebar').classList.contains('active')) {
+                    document.getElementById('overlay').classList.remove('active');
+                }
+            }
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('theme-btn');
+            const icon = themeBtn.querySelector('i');
+            body.classList.toggle('light-mode');
+
+            if (body.classList.contains('light-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('kazuma-theme', 'light');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('kazuma-theme', 'dark');
+            }
+        }
+
+        function logout() { 
+            localStorage.clear(); 
+            window.location.href = '/login'; 
+        }
+
+        function copyKey() { 
+            navigator.clipboard.writeText(userData.key); 
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Copiado al Portapapeles', showConfirmButton: false, timer: 1500, background: 'var(--card-bg)', color: 'var(--text-main)' }); 
+        }
+
+        function toggleEye() { 
+            const el = document.getElementById('key-display'); 
+            el.innerText = el.innerText.includes('••••') ? userData.key : '••••••••••••••••'; 
+        }
+
+        function updateUptime(startTime) {
+            setInterval(() => {
+                const now = Date.now();
+                const diff = Math.floor((now - startTime) / 1000);
+                const h = Math.floor(diff / 3600).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                if(document.getElementById('uptime-val')) document.getElementById('uptime-val').innerText = `${h}:${m}:${s}`;
+            }, 1000);
+        }
+
+        async function loadDash() {
+            const savedTheme = localStorage.getItem('kazuma-theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-btn').querySelector('i').classList.replace('fa-moon', 'fa-sun');
+            }
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute('6Lfw-dwsAAAAACc6y5K4sfFnplSqbskYPia1ADh5', {action: 'dashboard_load'}).then(function(token) {
+                    console.log('Protocolo reCAPTCHA V3 Activo');
+                });
+            });
+
+            const area = document.getElementById('content-area');
+            const pre = document.getElementById('preloader');
+
+            if (userData.role === 'admin') document.getElementById('admin-nav').style.display = 'block';
+
+            try {
+                const [resGlobal, resMe] = await Promise.all([
+                    fetch('/api/auth/dashboard-global'),
+                    fetch(`/api/auth/me?apiKey=${userData.key}`)
+                ]);
+
+                const data = await resGlobal.json();
+                const me = await resMe.json();
+
+                if (me.status) {
+                    const updatedUser = { ...userData, ...me.data };
+                    localStorage.setItem('kazuma_user', JSON.stringify(updatedUser));
+                }
+
+                const finalAvatar = me.data?.profile_img || 'https://files.catbox.moe/9ssbf9.jpg';
+                document.getElementById('avatar-trigger-img').src = finalAvatar;
+
+                area.innerHTML = `
+                <section style="text-align: center; padding: 15px 0 25px 0;">
+                    <img src="${finalAvatar}" class="hero-img">
+                    <h1 style="font-size: 1.35rem; font-weight: 800; margin: 0; letter-spacing: -0.5px;">SISTEMA OPERATIVO</h1>
+                    <p style="color:var(--text-muted); browser-font-weight: 600; font-size: 0.8rem; margin-top: 4px;">@${userData.username.toLowerCase()}</p>
+                </section>
+
+                <div class="api-card">
+                    <div class="card-title"><i class="fas fa-key" style="color:var(--neon-blue)"></i> Credenciales API Key</div>
+                    <div class="key-box">
+                        <span id="key-display" style="font-family: 'monospace'; font-size: 0.85rem; letter-spacing:1px;">••••••••••••••••</span>
+                        <div style="display:flex; gap:15px">
+                            <i class="fas fa-eye" onclick="toggleEye()" style="color:var(--text-muted); cursor:pointer;"></i>
+                            <i class="fas fa-copy" onclick="copyKey()" style="color:var(--neon-blue); cursor:pointer;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="api-card">
+                    <div class="card-title"><i class="fas fa-microchip" style="color:var(--neon-blue)"></i> Monitor del Servidor</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div class="stat-box" style="grid-column: span 2; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Comunidad</div>
+                                <div style="font-size: 1.05rem; font-weight: 700;">${data.totalUsers} Usuarios asignados</div>
+                            </div>
+                            <i class="fas fa-users" style="font-size: 1.2rem; opacity: 0.2;"></i>
+                        </div>
+                        <div class="stat-box">
+                            <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Tiempo Online</div>
+                            <div id="uptime-val" style="font-size: 1.05rem; font-weight: 700; color:var(--neon-blue)">00:00:00</div>
+                        </div>
+                        <div class="stat-box">
+                            <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 2px;">Métricas de Uso</div>
+                            <div style="font-size: 1.05rem; font-weight: 700;">${me.data?.requests.today || 0} / ${me.data?.requests.limit || 0}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="api-card">
+                    <div class="card-title"><i class="fas fa-ranking-star" style="color:var(--neon-blue)"></i> Top Consumo Global</div>
+                    ${data.top5.map((u, i) => `
+                        <div class="user-card">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.05); ${i==0?'border-color:#eab308; color:#eab308;':''}">
+                                    ${i+1}
+                                </div>
+                                <span style="font-size:0.85rem; font-weight:600">${u.username}</span>
+                            </div>
+                            <span style="color:var(--text-muted); font-weight:700; font-size:0.75rem;">${u.total} requests</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+
+                updateUptime(data.uptime);
+            } catch (e) { 
+                console.error("Error al cargar Dashboard:", e);
+                area.innerHTML = "<p style='text-align:center; color:#ef4444; font-weight:600; margin-top:50px;'>ERROR DE COMUNICACIÓN CON EL BACKEND</p>"; 
+            }
+
+            setTimeout(() => { pre.style.display = 'none'; }, 600);
+        }
+
+        window.onload = loadDash;
+    </script>
+</body>
+</html>
