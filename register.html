@@ -7,7 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
     <style>
         :root { 
             --dark-bg: #090a0f; 
@@ -74,10 +76,12 @@
             transform: translateY(-1px);
         }
 
-        .g-recaptcha { 
+        /* Contenedor optimizado para Turnstile */
+        .turnstile-container { 
             display: flex; 
             justify-content: center; 
             margin: 20px 0; 
+            min-height: 65px;
         }
     </style>
 </head>
@@ -131,7 +135,12 @@
                 </label>
             </div>
 
-            <div class="g-recaptcha" data-sitekey="6Lcz9dwsAAAAAMJ3mdr0wYqws6j7eys_hNdMDKcj" data-theme="dark"></div>
+            <div class="turnstile-container">
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAADZQfgbHy1wLHtDG" 
+                     data-theme="dark">
+                </div>
+            </div>
 
             <button type="submit" id="btnSubmit" class="btn-purple w-full py-4 rounded-2xl text-sm shadow-lg">
                 Registrar Cuenta
@@ -173,19 +182,23 @@
             }
         })();
 
+        // Función corregida: ahora maneja dinámicamente cualquier ID que le pases
         function togglePassword(id, el) {
             const input = document.getElementById(id);
-            input.type = input.type === "password" ? "text" : "password";
-            el.classList.toggle("fa-eye");
-            el.classList.toggle("fa-eye-slash");
+            if (input) {
+                input.type = input.type === "password" ? "text" : "password";
+                el.classList.toggle("fa-eye");
+                el.classList.toggle("fa-eye-slash");
+            }
         }
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const captchaResponse = grecaptcha.getResponse();
-            if (!captchaResponse) {
-                return Swal.fire({ title: 'Seguridad', text: 'Resuelve el CAPTCHA', icon: 'warning', background: 'var(--card-bg)', color: 'var(--text-main)' });
+            // Validación usando la API nativa de Turnstile
+            const turnstileResponse = turnstile.getResponse();
+            if (!turnstileResponse) {
+                return Swal.fire({ title: 'Seguridad', text: 'Resuelve la verificación de Cloudflare', icon: 'warning', background: 'var(--card-bg)', color: 'var(--text-main)' });
             }
 
             const pass = document.getElementById('password').value;
@@ -207,7 +220,7 @@
                         username: document.getElementById('username').value,
                         email: document.getElementById('email').value,
                         password: pass,
-                        captcha: captchaResponse
+                        captcha: turnstileResponse // Token enviado al backend para verificación
                     })
                 });
 
@@ -229,13 +242,13 @@
                 } else {
                     Swal.fire({ title: 'Error', text: data.message, icon: 'error', background: 'var(--card-bg)', color: 'var(--text-main)' });
                     btn.disabled = false;
-                    btn.innerText = 'Acceso';
-                    grecaptcha.reset();
+                    btn.innerText = 'Registrar Cuenta';
+                    turnstile.reset(); // Reseteo nativo de Turnstile en fallos controlados
                 }
             } catch (err) {
                 btn.disabled = false;
-                btn.innerText = 'Acceso';
-                grecaptcha.reset();
+                btn.innerText = 'Registrar Cuenta';
+                turnstile.reset(); // Reseteo nativo de Turnstile en excepciones
                 Swal.fire({ title: 'Error', text: 'Fallo al conectar con el servidor', icon: 'error', background: 'var(--card-bg)', color: 'var(--text-main)' });
             }
         });
