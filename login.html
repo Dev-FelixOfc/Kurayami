@@ -7,7 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    
+    <!-- API de Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    
     <style>
         :root { 
             --dark-bg: #090a0f; 
@@ -74,10 +77,12 @@
             transform: translateY(-1px);
         }
 
-        .g-recaptcha { 
+        /* Contenedor optimizado para Turnstile */
+        .turnstile-container { 
             display: flex; 
             justify-content: center; 
             margin: 20px 0; 
+            min-height: 65px;
         }
     </style>
 </head>
@@ -119,7 +124,13 @@
                 </label>
             </div>
 
-            <div class="g-recaptcha" data-sitekey="6Lcz9dwsAAAAAMJ3mdr0wYqws6j7eys_hNdMDKcj" data-theme="dark"></div>
+            <!-- Widget Cloudflare Turnstile Integrado -->
+            <div class="turnstile-container">
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAADZQfgbHy1wLHtDG" 
+                     data-theme="dark">
+                </div>
+            </div>
 
             <button type="submit" id="btnSubmit" class="btn-purple w-full py-4 rounded-2xl text-sm shadow-lg">
                 Acceso
@@ -193,9 +204,10 @@
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const captchaResponse = grecaptcha.getResponse();
-            if (!captchaResponse) {
-                Swal.fire({ title: 'Seguridad', text: 'Resuelve el CAPTCHA', icon: 'warning', background: 'var(--card-bg)', color: 'var(--text-main)' });
+            // Capturar la respuesta de Turnstile usando su API nativa
+            const turnstileResponse = turnstile.getResponse();
+            if (!turnstileResponse) {
+                Swal.fire({ title: 'Seguridad', text: 'Resuelve la verificación de Cloudflare', icon: 'warning', background: 'var(--card-bg)', color: 'var(--text-main)' });
                 return;
             }
 
@@ -210,7 +222,7 @@
                     body: JSON.stringify({
                         email: document.getElementById('email').value,
                         password: document.getElementById('password').value,
-                        captcha: captchaResponse
+                        captcha: turnstileResponse // Se envía el token de Turnstile al backend
                     })
                 });
 
@@ -226,7 +238,7 @@
                 Swal.fire({ title: 'Error', text: err.message, icon: 'error', background: 'var(--card-bg)', color: 'var(--text-main)' });
                 btn.disabled = false;
                 btn.innerText = 'Acceso';
-                grecaptcha.reset();
+                turnstile.reset(); // Resetea el widget de Cloudflare en caso de error
             }
         });
     </script>
