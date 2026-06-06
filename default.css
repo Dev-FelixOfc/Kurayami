@@ -1,130 +1,28 @@
-/* ==========================================================================
-   KURAYAMI THEME - Tema oficial de kazuma Host
-         Desarrollado por Félix Ofc
-   ========================================================================== */
-
+/* default.css - Tema Kurayami Base */
 :root {
-    /* Paleta Principal Kurayami */
-    --dark-bg: #040406;          /* Fondo base ultra oscuro */
-    --card-bg: #09090f;          /* Fondo de tarjetas y paneles */
-    --sidebar-bg: #07070a;       /* Fondo del menú lateral */
-    --neon-purple: #a855f7;      /* Morado neón eléctrico principal */
-    --neon-blue: #00f3ff;        /* Acento cian ciberpunk */
-    
-    /* Variables de Texto */
-    --text-main: #f3f4f6;        /* Texto principal claro */
-    --text-muted: #6b7280;       /* Texto secundario/atenuado */
-    
-    /* Animaciones y Efectos */
-    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --kurayami-glow: 0 0 15px rgba(168, 85, 247, 0.4);
+    --dark-bg: #0d0e12; 
+    --card-bg: #16171f; 
+    --neon-blue: #3b82f6; 
+    --text-main: #f3f4f6; 
+    --text-muted: #9ca3af;
+    --border-color: rgba(255, 255, 255, 0.04);
 }
 
-/* Forzar modo oscuro absoluto eliminando variantes claras */
-body.light-mode, 
 body {
-    background-color: var(--dark-bg) !important;
-    color: var(--text-main) !important;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    transition: background-color var(--transition), color var(--transition);
+    background-color: var(--dark-bg);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.3s ease;
 }
 
-/* Ajustes globales de interfaz usando la nueva paleta */
-header {
-    background: rgba(7, 7, 10, 0.85) !important;
-    backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid rgba(168, 85, 247, 0.15) !important;
+.panel-test {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
 }
 
-body.light-mode header {
-    background: rgba(7, 7, 10, 0.85) !important;
-    border-bottom: 1px solid rgba(168, 85, 247, 0.15) !important;
-}
-
-.brand span {
-    color: var(--neon-purple) !important;
-    text-shadow: 0 0 12px rgba(168, 85, 247, 0.6) !important;
-}
-
-.theme-toggle, 
-header .header-controls div i {
-    color: var(--neon-purple) !important;
-}
-
-/* Tarjetas y Contenedores */
-.api-card {
-    background: var(--card-bg) !important;
-    border: 1px solid rgba(255, 255, 255, 0.03) !important;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.6) !important;
-}
-
-.stat-box {
-    background: rgba(168, 85, 247, 0.03) !important;
-    border-left: 4px solid var(--neon-purple) !important;
-    border-top: 1px solid rgba(255,255,255,0.01) !important;
-    border-right: 1px solid rgba(255,255,255,0.01) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.01) !important;
-}
-
-.stat-box i {
-    color: var(--neon-purple) !important;
-    opacity: 0.05 !important;
-}
-
-.key-box {
-    background: rgba(0,0,0,0.5) !important;
-    border: 1px solid rgba(168, 85, 247, 0.1) !important;
-}
-
-.key-box i.fa-copy {
-    color: var(--neon-purple) !important;
-}
-
-.user-card {
-    background: linear-gradient(90deg, rgba(255,255,255,0.01) 0%, rgba(168,85,247,0.04) 100%) !important;
-    border: 1px solid rgba(168, 85, 247, 0.08) !important;
-}
-
-/* Elementos de Navegación */
-.sidebar {
-    background: var(--sidebar-bg) !important;
-    border-left: 1px solid rgba(168, 85, 247, 0.1) !important;
-}
-
-.sidebar-link {
-    background: rgba(255,255,255,0.02) !important;
-    color: var(--text-main) !important;
-}
-
-.sidebar-link:hover {
-    background: rgba(168, 85, 247, 0.08) !important;
-    color: var(--neon-purple) !important;
-}
-
-.logout-btn {
-    color: var(--neon-purple) !important;
-    border: 1px solid var(--neon-purple) !important;
-}
-
-/* Preloader y Spinner */
-#preloader {
-    background: var(--dark-bg) !important;
-}
-
-.spinner {
-    border: 3px solid rgba(168, 85, 247, 0.1) !important;
-    border-top: 3px solid var(--neon-purple) !important;
-    box-shadow: var(--kurayami-glow) !important;
-}
-
-.loading-text {
-    color: var(--neon-purple) !important;
-}
-
-/* Imagen de Perfil Principal */
-.hero-img {
-    border: 3px solid var(--neon-purple) !important;
-    box-shadow: var(--kurayami-glow) !important;
+.btn-theme {
+    background-color: var(--neon-blue);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
