@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazuma API | Test de Temas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link id="theme-stylesheet" rel="stylesheet" href="default.css">
+
+    <script>
+        // Script síncrono para evitar el "FOUC" (parpadeo de estilos viejos al recargar)
+        (function() {
+            const savedTheme = localStorage.getItem('kazuma-active-css') || 'default.css';
+            document.getElementById('theme-stylesheet').setAttribute('href', savedTheme);
+        })();
+    </script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="panel-test p-8 rounded-3xl w-full max-w-md text-center transition-all duration-300">
+        <h1 class="text-2xl font-extrabold tracking-tight mb-2">Entorno de Pruebas</h1>
+        <p class="text-sm opacity-70 mb-6" style="color: var(--text-muted)">Prueba la inyección dinámica de hojas de estilo para Kurayami.</p>
+        
+        <div class="p-4 rounded-2xl bg-black/20 border border-white/5 mb-6 text-left">
+            <span class="text-xs uppercase font-bold tracking-widest block mb-1" style="color: var(--neon-blue)">Estado Actual</span>
+            <p class="text-xs font-mono" id="status-text">Cargando hoja de estilo...</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="switchTheme('default.css')" class="btn-theme py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.02] active:scale-[0.98]">
+                Default (Azul)
+            </button>
+            <button onclick="switchTheme('test.css')" class="btn-theme py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:scale-[1.02] active:scale-[0.98]">
+                Test (Morado)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function switchTheme(cssFile) {
+            // 1. Cambia el archivo CSS en tiempo real
+            document.getElementById('theme-stylesheet').href = cssFile;
+            
+            // 2. Guarda la elección en el localStorage
+            localStorage.setItem('kazuma-active-css', cssFile);
+            
+            // 3. Actualiza el texto informativo
+            document.getElementById('status-text').innerText = `Leyendo estilos desde: ${cssFile}`;
+        }
+
+        // Mostrar el archivo activo al cargar la página por completo
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentCss = localStorage.getItem('kazuma-active-css') || 'default.css';
+            document.getElementById('status-text').innerText = `Leyendo estilos desde: ${currentCss}`;
+        });
+    </script>
+</body>
+</html>
