@@ -6,8 +6,9 @@
     <title>Kazuma | Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.google.com/recaptcha/api.js?render=6Lfw-dwsAAAAACc6y5K4sfFnplSqbskYPia1ADh5"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <style>
         :root { 
@@ -42,19 +43,74 @@
             transition: background-color var(--transition), color var(--transition);
         }
 
-        .grecaptcha-badge { 
-            width: 70px !important; 
-            overflow: hidden !important; 
-            transition: all 0.3s ease !important;
-            left: auto !important; 
-            right: 0px !important; 
-            bottom: 20px !important;
-            z-index: 9999 !important;
-        }
-        .grecaptcha-badge:hover { 
-            width: 256px !important; 
+        /* --- INTERCEPTOR DE SEGURIDAD EXCLUSIVO (CYBERPUNK NEÓN) --- */
+        .cyber-interceptor-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #060709;
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
 
+        .cyber-panel-box {
+            background: rgba(22, 23, 31, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            padding: 40px 30px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(59, 130, 246, 0.05);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .cyber-scanner-ring {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 25px auto;
+            border: 2px dashed var(--neon-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotateRing 8s linear infinite;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        @keyframes rotateRing { 100% { transform: rotate(360deg); } }
+
+        .cyber-panel-box h2 {
+            font-size: 1.3rem;
+            margin: 0 0 12px 0;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .cyber-panel-box p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0 0 30px 0;
+            line-height: 1.5;
+        }
+
+        .turnstile-inline-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 65px;
+        }
+
+        .blur-dashboard-content {
+            filter: blur(15px);
+            pointer-events: none;
+        }
+
+        /* --- CONFIGURACIONES BASE DASHBOARD --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: background var(--transition); }
         .spinner { width: 45px; height: 45px; border: 3px solid rgba(59, 130, 246, 0.1); border-top: 3px solid var(--neon-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -78,165 +134,45 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .header-left, .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
 
-        .menu-trigger {
-            font-size: 1.25rem;
-            color: var(--text-main);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
-            transition: var(--transition);
-        }
-        .menu-trigger:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        body.light-mode .menu-trigger:hover {
-            background: rgba(0, 0, 0, 0.04);
-        }
+        .menu-trigger { font-size: 1.25rem; color: var(--text-main); cursor: pointer; padding: 8px; border-radius: 10px; transition: var(--transition); }
+        .menu-trigger:hover { background: rgba(255, 255, 255, 0.05); }
+        body.light-mode .menu-trigger:hover { background: rgba(0, 0, 0, 0.04); }
 
         .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: -0.5px; }
         .brand span { color: var(--neon-blue); }
 
-        .theme-toggle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 10px;
-            transition: var(--transition);
-        }
+        .theme-toggle { font-size: 1.1rem; color: var(--text-muted); cursor: pointer; padding: 8px; border-radius: 10px; transition: var(--transition); }
         .theme-toggle:hover { color: var(--text-main); }
 
-        .profile-trigger {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            cursor: pointer;
-            overflow: hidden;
-            transition: var(--transition);
-            position: relative;
-        }
+        .profile-trigger { width: 36px; height: 36px; border-radius: 50%; background: var(--card-bg); border: 2px solid rgba(255, 255, 255, 0.08); cursor: pointer; overflow: hidden; transition: var(--transition); position: relative; }
         body.light-mode .profile-trigger { border: 2px solid rgba(0, 0, 0, 0.08); }
         .profile-trigger:hover { border-color: var(--neon-blue); }
         .profile-trigger img { width: 100%; height: 100%; object-fit: cover; }
 
-        .profile-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background: var(--sidebar-bg);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            width: 180px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            display: none;
-            z-index: 2100;
-            padding: 6px;
-        }
-        body.light-mode .profile-dropdown {
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
+        .profile-dropdown { position: absolute; top: 60px; right: 20px; background: var(--sidebar-bg); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; width: 180px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: none; z-index: 2100; padding: 6px; }
+        body.light-mode .profile-dropdown { border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .profile-dropdown.active { display: block; animation: fadeIn 0.2s ease; }
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 10px;
-            transition: var(--transition);
-        }
+        
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; color: var(--text-main); text-decoration: none; font-size: 0.9rem; font-weight: 500; border-radius: 10px; transition: var(--transition); }
         .dropdown-item:hover { background: rgba(255, 255, 255, 0.04); color: var(--neon-blue); }
         body.light-mode .dropdown-item:hover { background: rgba(0, 0, 0, 0.03); }
 
-        .container { 
-            width: 100%; 
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px 16px; 
-            box-sizing: border-box; 
-            flex-grow: 1;
-        }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; padding: 20px 16px; box-sizing: border-box; flex-grow: 1; }
+        .hero-img { width: 90px; height: 90px; border-radius: 50%; border: 2px solid var(--neon-blue); margin-bottom: 12px; object-fit: cover; }
 
-        .hero-img { 
-            width: 90px; 
-            height: 90px; 
-            border-radius: 50%; 
-            border: 2px solid var(--neon-blue); 
-            margin-bottom: 12px; 
-            object-fit: cover; 
-        }
+        .api-card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(255, 255, 255, 0.03); box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        body.light-mode .api-card { border: 1px solid rgba(0, 0, 0, 0.04); box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
 
-        .api-card { 
-            background: var(--card-bg); 
-            border-radius: 16px; 
-            padding: 20px; 
-            margin-bottom: 16px; 
-            border: 1px solid rgba(255, 255, 255, 0.03); 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        body.light-mode .api-card {
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-        }
-
-        .card-title {
-            color: var(--text-main);
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: 0.5px;
-            opacity: 0.9;
-        }
-
-        .stat-box { 
-            background: rgba(255, 255, 255, 0.01); 
-            padding: 16px; 
-            border-radius: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            position: relative;
-            overflow: hidden;
-        }
+        .card-title { color: var(--text-main); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; opacity: 0.9; }
+        .stat-box { background: rgba(255, 255, 255, 0.01); padding: 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.03); position: relative; overflow: hidden; }
         body.light-mode .stat-box { border: 1px solid rgba(0, 0, 0, 0.04); background: rgba(0, 0, 0, 0.02); }
 
-        .key-box { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            background: rgba(0,0,0,0.15); 
-            padding: 14px 16px; 
-            border-radius: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.03); 
-        }
+        .key-box { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.15); padding: 14px 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.03); }
         body.light-mode .key-box { border: 1px solid rgba(0, 0, 0, 0.04); background: rgba(0, 0, 0, 0.03); }
 
-        .user-card { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            background: rgba(255, 255, 255, 0.01); 
-            padding: 12px 14px; 
-            border-radius: 12px; 
-            margin-bottom: 8px; 
-            border: 1px solid rgba(255, 255, 255, 0.02);
-        }
+        .user-card { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.01); padding: 12px 14px; border-radius: 12px; margin-bottom: 8px; border: 1px solid rgba(255, 255, 255, 0.02); }
         body.light-mode .user-card { border: 1px solid rgba(0, 0, 0, 0.03); background: rgba(0,0,0,0.01); }
 
         .sidebar { position: fixed; top: 0; left: -100%; width: 80%; max-width: 290px; height: 100%; background: var(--sidebar-bg); border-right: 1px solid rgba(255, 255, 255, 0.04); transition: var(--transition); z-index: 2000; padding: 25px 18px; box-sizing: border-box; }
@@ -269,57 +205,77 @@
 </head>
 <body>
 
-    <div id="preloader">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading...</div>
-    </div>
-
-    <header>
-        <div class="header-left">
-            <div class="menu-trigger" onclick="toggleMenu()"><i class="fas fa-bars-staggered"></i></div>
-            <div class="brand">KAZUMA <span>API</span></div>
-        </div>
-        <div class="header-right">
-            <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
-                <i class="fas fa-moon"></i>
+    <div id="cyberInterceptor" class="cyber-interceptor-overlay">
+        <div class="cyber-panel-box">
+            <div class="cyber-scanner-ring">
+                <i class="fas fa-shield-alt" style="color: var(--neon-blue); font-size: 1.4rem; transform: rotate(-360deg); animation: rotateRing 8s linear infinite reverse;"></i>
             </div>
-            <div class="profile-trigger" onclick="toggleDropdown(event)">
-                <img id="avatar-trigger-img" src="https://upload.yotsuba.giize.com/u/WYAn7fjU.jpg" alt="User">
+            <h2>Filtro Perimetral Activo</h2>
+            <p>El protocolo de seguridad detectó variaciones en la sesión. Resuelve la comprobación de Cloudflare para restablecer tu entorno de trabajo.</p>
+
+            <div class="turnstile-inline-wrapper">
+                <div class="cf-turnstile" 
+                     data-sitekey="0x4AAAAAADZQfgbHy1wLHtDG" 
+                     data-callback="onTurnstileSuccess" 
+                     data-theme="dark">
+                </div>
             </div>
         </div>
-    </header>
-
-    <div class="profile-dropdown" id="profile-dropdown">
-        <a href="/profile" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
-        <a href="/notifications" class="dropdown-item"><i class="fas fa-bell"></i> Notificaciones</a>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
-
-    <nav class="sidebar" id="sidebar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
-            <span style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">NAVEGACIÓN</span>
-            <i class="fas fa-times menu-trigger" onclick="toggleMenu()" style="font-size: 1.1rem;"></i>
+    <div id="dashboardWrapper">
+        <div id="preloader">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading...</div>
         </div>
 
-        <div id="admin-nav" style="display:none;">
-            <p class="nav-category">Staff Control</p>
-            <a href="/admin" class="sidebar-link" style="color: var(--neon-blue);"><i class="fas fa-user-shield"></i> Panel Admin</a>
+        <header>
+            <div class="header-left">
+                <div class="menu-trigger" onclick="toggleMenu()"><i class="fas fa-bars-staggered"></i></div>
+                <div class="brand">KAZUMA <span>API</span></div>
+            </div>
+            <div class="header-right">
+                <div class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="profile-trigger" onclick="toggleDropdown(event)">
+                    <img id="avatar-trigger-img" src="https://upload.yotsuba.giize.com/u/WYAn7fjU.jpg" alt="User">
+                </div>
+            </div>
+        </header>
+
+        <div class="profile-dropdown" id="profile-dropdown">
+            <a href="/profile" class="dropdown-item"><i class="fas fa-user-circle"></i> Mi Perfil</a>
+            <a href="/notifications" class="dropdown-item"><i class="fas fa-bell"></i> Notificaciones</a>
         </div>
 
-        <p class="nav-category">General</p>
-        <div class="sidebar-link active" onclick="closeAllPanels()"><i class="fas fa-home"></i> Dashboard</div>
+        <div class="overlay" id="overlay" onclick="closeAllPanels()"></div>
 
-        <p class="nav-category">Servicios API</p>
-        <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search Endpoints</a>
-        <a href="/endpoints/tools" class="sidebar-link"><i class="fas fa-tools"></i> Core Tools</a>
-        <a href="/endpoints/download" class="sidebar-link"><i class="fas fa-download"></i> Media Downloads</a>
-        <a href="/endpoints/ai" class="sidebar-link"><i class="fas fa-robot"></i> Inteligencia Artificial</a>
+        <nav class="sidebar" id="sidebar">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-left: 10px;">
+                <span style="font-weight: 800; font-size: 0.9rem; color: var(--text-main);">NAVEGACIÓN</span>
+                <i class="fas fa-times menu-trigger" onclick="toggleMenu()" style="font-size: 1.1rem;"></i>
+            </div>
 
-        <div class="sidebar-link" onclick="logout()" style="margin-top: 30px; color: #ef4444; cursor: pointer;"><i class="fas fa-power-off"></i> Cerrar Sesión</div>
-    </nav>
+            <div id="admin-nav" style="display:none;">
+                <p class="nav-category">Staff Control</p>
+                <a href="/admin" class="sidebar-link" style="color: var(--neon-blue);"><i class="fas fa-user-shield"></i> Panel Admin</a>
+            </div>
 
-    <div class="container" id="content-area"></div>
+            <p class="nav-category">General</p>
+            <div class="sidebar-link active" onclick="closeAllPanels()"><i class="fas fa-home"></i> Dashboard</div>
+
+            <p class="nav-category">Servicios API</p>
+            <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search Endpoints</a>
+            <a href="/endpoints/tools" class="sidebar-link"><i class="fas fa-tools"></i> Core Tools</a>
+            <a href="/endpoints/download" class="sidebar-link"><i class="fas fa-download"></i> Media Downloads</a>
+            <a href="/endpoints/ai" class="sidebar-link"><i class="fas fa-robot"></i> Inteligencia Artificial</a>
+
+            <div class="sidebar-link" onclick="logout()" style="margin-top: 30px; color: #ef4444; cursor: pointer;"><i class="fas fa-power-off"></i> Cerrar Sesión</div>
+        </nav>
+
+        <div class="container" id="content-area"></div>
+    </div>
 
     <%- include('partials/footer.html') %>
 
@@ -327,6 +283,74 @@
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         if (!userData) window.location.href = '/login';
 
+        // --- SISTEMA INTELIGENTE DE INTERCEPCIÓN COPIADO Y MEJORADO ---
+        const cyberInterceptor = document.getElementById('cyberInterceptor');
+        const dashboardWrapper = document.getElementById('dashboardWrapper');
+        const originalUrlPath = window.location.pathname + window.location.search;
+
+        function activarBloqueoSeguridad() {
+            if (!sessionStorage.getItem('kazuma_dash_lock')) {
+                sessionStorage.setItem('kazuma_dash_lock', 'true');
+                window.location.reload(); 
+                return;
+            }
+            // Enmascarar la URL en el navegador con la ruta solicitada
+            history.pushState(null, "", "/ac0f0d3a74ac07a4c0f0d3a74acCl");
+            cyberInterceptor.style.display = 'flex';
+            dashboardWrapper.classList.add('blur-dashboard-content');
+        }
+
+        function onTurnstileSuccess() {
+            sessionStorage.removeItem('kazuma_dash_lock');
+            localStorage.setItem('kazuma_dash_clicks', '[]');
+            // Devolver la URL del dashboard a su estado original de forma limpia
+            history.pushState(null, "", originalUrlPath);
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }
+
+        // Auto-activación si la bandera persiste
+        if (sessionStorage.getItem('kazuma_dash_lock') === 'true') {
+            history.pushState(null, "", "/ac0f0d3a74ac07a4c0f0d3a74acCl");
+            cyberInterceptor.style.display = 'flex';
+            dashboardWrapper.classList.add('blur-dashboard-content');
+        }
+
+        // Condición 1: Recargas abusivas (Cada 7 veces)
+        let reloadCount = parseInt(localStorage.getItem('kazuma_dash_reloads') || '0');
+        reloadCount++;
+        localStorage.setItem('kazuma_dash_reloads', reloadCount);
+        if (reloadCount % 7 === 0) {
+            activarBloqueoSeguridad();
+        }
+
+        // Condición 2: Detección de latencia inestable o mala conectividad
+        if (navigator.connection) {
+            const rtt = navigator.connection.rtt;
+            const saveData = navigator.connection.saveData;
+            if (rtt > 400 || saveData) {
+                activarBloqueoSeguridad();
+            }
+        }
+
+        // Condición 3: Acciones sospechosas (Spam masivo de clicks en el dash)
+        let clickTimestamps = JSON.parse(localStorage.getItem('kazuma_dash_clicks') || '[]');
+        document.addEventListener('click', () => {
+            if (sessionStorage.getItem('kazuma_dash_lock') === 'true') return;
+
+            const ahora = Date.now();
+            clickTimestamps.push(ahora);
+            clickTimestamps = clickTimestamps.filter(t => ahora - t < 2000); // Mantener ventana de 2 segundos
+            localStorage.setItem('kazuma_dash_clicks', JSON.stringify(clickTimestamps));
+
+            if (clickTimestamps.length > 12) { // Tolerancia ajustada ligeramente más alta para el Dash por navegación legítima
+                activarBloqueoSeguridad();
+            }
+        });
+
+        // --- LÓGICA DE CONTROL DEL INTERFAZ ---
         function toggleMenu() { 
             document.getElementById('profile-dropdown').classList.remove('active');
             const sidebarActive = document.getElementById('sidebar').classList.toggle('active'); 
@@ -403,11 +427,7 @@
                 document.getElementById('theme-btn').querySelector('i').classList.replace('fa-moon', 'fa-sun');
             }
 
-            grecaptcha.ready(function() {
-                grecaptcha.execute('6Lfw-dwsAAAAACc6y5K4sfFnplSqbskYPia1ADh5', {action: 'dashboard_load'}).then(function(token) {
-                    console.log('Protocolo reCAPTCHA V3 Activo');
-                });
-            });
+            // [REMOVIDO COMPLETAMENTE RECAPTCHA V3 VIEJO AQUÍ]
 
             const area = document.getElementById('content-area');
             const pre = document.getElementById('preloader');
