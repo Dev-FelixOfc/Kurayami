@@ -43,7 +43,6 @@
             transition: background-color var(--transition), color var(--transition);
         }
 
-        /* --- INTERCEPTOR DE SEGURIDAD EXCLUSIVO (CYBERPUNK NEÓN) --- */
         .cyber-interceptor-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -110,7 +109,6 @@
             pointer-events: none;
         }
 
-        /* --- CONFIGURACIONES BASE DASHBOARD --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: background var(--transition); }
         .spinner { width: 45px; height: 45px; border: 3px solid rgba(59, 130, 246, 0.1); border-top: 3px solid var(--neon-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -264,6 +262,7 @@
 
             <p class="nav-category">General</p>
             <div class="sidebar-link active" onclick="closeAllPanels()"><i class="fas fa-home"></i> Dashboard</div>
+            <a href="/store" class="sidebar-link"><i class="fas fa-basket-shopping"></i> Store</a>
 
             <p class="nav-category">Servicios API</p>
             <a href="/endpoints/search" class="sidebar-link"><i class="fas fa-search"></i> Search Endpoints</a>
@@ -283,7 +282,6 @@
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         if (!userData) window.location.href = '/login';
 
-        // --- SISTEMA INTELIGENTE DE INTERCEPCIÓN COPIADO Y MEJORADO ---
         const cyberInterceptor = document.getElementById('cyberInterceptor');
         const dashboardWrapper = document.getElementById('dashboardWrapper');
         const originalUrlPath = window.location.pathname + window.location.search;
@@ -294,7 +292,6 @@
                 window.location.reload(); 
                 return;
             }
-            // Enmascarar la URL en el navegador con la ruta solicitada
             history.pushState(null, "", "/ac0f0d3a74ac07a4c0f0d3a74acCl");
             cyberInterceptor.style.display = 'flex';
             dashboardWrapper.classList.add('blur-dashboard-content');
@@ -303,7 +300,6 @@
         function onTurnstileSuccess() {
             sessionStorage.removeItem('kazuma_dash_lock');
             localStorage.setItem('kazuma_dash_clicks', '[]');
-            // Devolver la URL del dashboard a su estado original de forma limpia
             history.pushState(null, "", originalUrlPath);
 
             setTimeout(() => {
@@ -311,14 +307,12 @@
             }, 500);
         }
 
-        // Auto-activación si la bandera persiste
         if (sessionStorage.getItem('kazuma_dash_lock') === 'true') {
             history.pushState(null, "", "/ac0f0d3a74ac07a4c0f0d3a74acCl");
             cyberInterceptor.style.display = 'flex';
             dashboardWrapper.classList.add('blur-dashboard-content');
         }
 
-        // Condición 1: Recargas abusivas (Cada 7 veces)
         let reloadCount = parseInt(localStorage.getItem('kazuma_dash_reloads') || '0');
         reloadCount++;
         localStorage.setItem('kazuma_dash_reloads', reloadCount);
@@ -326,7 +320,6 @@
             activarBloqueoSeguridad();
         }
 
-        // Condición 2: Detección de latencia inestable o mala conectividad
         if (navigator.connection) {
             const rtt = navigator.connection.rtt;
             const saveData = navigator.connection.saveData;
@@ -335,22 +328,20 @@
             }
         }
 
-        // Condición 3: Acciones sospechosas (Spam masivo de clicks en el dash)
         let clickTimestamps = JSON.parse(localStorage.getItem('kazuma_dash_clicks') || '[]');
         document.addEventListener('click', () => {
             if (sessionStorage.getItem('kazuma_dash_lock') === 'true') return;
 
             const ahora = Date.now();
             clickTimestamps.push(ahora);
-            clickTimestamps = clickTimestamps.filter(t => ahora - t < 2000); // Mantener ventana de 2 segundos
+            clickTimestamps = clickTimestamps.filter(t => ahora - t < 2000); 
             localStorage.setItem('kazuma_dash_clicks', JSON.stringify(clickTimestamps));
 
-            if (clickTimestamps.length > 12) { // Tolerancia ajustada ligeramente más alta para el Dash por navegación legítima
+            if (clickTimestamps.length > 12) { 
                 activarBloqueoSeguridad();
             }
         });
 
-        // --- LÓGICA DE CONTROL DEL INTERFAZ ---
         function toggleMenu() { 
             document.getElementById('profile-dropdown').classList.remove('active');
             const sidebarActive = document.getElementById('sidebar').classList.toggle('active'); 
@@ -426,8 +417,6 @@
                 document.body.classList.add('light-mode');
                 document.getElementById('theme-btn').querySelector('i').classList.replace('fa-moon', 'fa-sun');
             }
-
-            // [REMOVIDO COMPLETAMENTE RECAPTCHA V3 VIEJO AQUÍ]
 
             const area = document.getElementById('content-area');
             const pre = document.getElementById('preloader');
